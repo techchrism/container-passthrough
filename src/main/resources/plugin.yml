@@ -1,5 +1,5 @@
 name: ${project.name}
 version: ${project.version}
-main: com.darkender.plugins.itemframecontainerpassthrough.ItemframeContainerPassthrough
+main: com.darkender.plugins.containerpassthrough.ContainerPassthrough
 api-version: 1.14
 author: Techdoodle

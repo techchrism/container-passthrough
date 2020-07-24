@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.darkender.plugins</groupId>
-    <artifactId>itemframecontainerpassthrough</artifactId>
+    <artifactId>containerpassthrough</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>ItemframeContainerPassthrough</name>
+    <name>ContainerPassthrough</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

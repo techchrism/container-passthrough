@@ -1,4 +1,4 @@
-package com.darkender.plugins.itemframecontainerpassthrough;
+package com.darkender.plugins.containerpassthrough;
 
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.block.Container;
@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.RayTraceResult;
 
-public class ItemframeContainerPassthrough extends JavaPlugin implements Listener
+public class ContainerPassthrough extends JavaPlugin implements Listener
 {
     @Override
     public void onEnable()

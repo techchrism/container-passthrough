@@ -31,6 +31,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./target/ItemframeContainerPassthrough.jar
-        asset_name: ItemframeContainerPassthrough.jar
+        asset_path: ./target/ContainerPassthrough.jar
+        asset_name: ContainerPassthrough.jar
         asset_content_type: application/java-archive
