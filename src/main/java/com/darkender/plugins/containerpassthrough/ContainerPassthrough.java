@@ -3,6 +3,7 @@ package com.darkender.plugins.containerpassthrough;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.block.Container;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -18,6 +19,21 @@ public class ContainerPassthrough extends JavaPlugin implements Listener
         getServer().getPluginManager().registerEvents(this, this);
     }
     
+    private boolean tryOpeningContainer(Player player)
+    {
+        RayTraceResult result = player.rayTraceBlocks(5.0, FluidCollisionMode.NEVER);
+        if(result == null || result.getHitBlock() == null || !(result.getHitBlock().getState() instanceof Container))
+        {
+            return false;
+        }
+        Container container = (Container) result.getHitBlock().getState();
+        if(!player.getOpenInventory().getTopInventory().equals(container.getInventory()))
+        {
+            player.openInventory(container.getInventory());
+        }
+        return true;
+    }
+    
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void onPlayerInteractEntity(PlayerInteractEntityEvent event)
     {
@@ -25,17 +41,10 @@ public class ContainerPassthrough extends JavaPlugin implements Listener
         {
             return;
         }
-    
-        RayTraceResult result = event.getPlayer().rayTraceBlocks(5.0, FluidCollisionMode.NEVER);
-        if(result == null || result.getHitBlock() == null || !(result.getHitBlock().getState() instanceof Container))
+        
+        if(tryOpeningContainer(event.getPlayer()))
         {
-            return;
-        }
-        Container container = (Container) result.getHitBlock().getState();
-        event.setCancelled(true);
-        if(!event.getPlayer().getOpenInventory().getTopInventory().equals(container.getInventory()))
-        {
-            event.getPlayer().openInventory(container.getInventory());
+            event.setCancelled(true);
         }
     }
 }
