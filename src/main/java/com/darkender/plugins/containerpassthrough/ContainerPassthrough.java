@@ -15,11 +15,19 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.RayTraceResult;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class ContainerPassthrough extends JavaPlugin implements Listener
 {
+    private Set<EntityType> passthroughEntities;
+    
     @Override
     public void onEnable()
     {
+        passthroughEntities = new HashSet<>();
+        passthroughEntities.add(EntityType.PAINTING);
+        passthroughEntities.add(EntityType.ITEM_FRAME);
         getServer().getPluginManager().registerEvents(this, this);
     }
     
@@ -51,7 +59,7 @@ public class ContainerPassthrough extends JavaPlugin implements Listener
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void onPlayerInteractEntity(PlayerInteractEntityEvent event)
     {
-        if(event.getRightClicked().getType() != EntityType.ITEM_FRAME || event.getPlayer().isSneaking())
+        if(event.getPlayer().isSneaking() || !passthroughEntities.contains(event.getRightClicked().getType()))
         {
             return;
         }
