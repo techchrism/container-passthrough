@@ -1,6 +1,5 @@
 package com.darkender.plugins.itemframecontainerpassthrough;
 
-import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.block.Container;
 import org.bukkit.entity.EntityType;
@@ -8,14 +7,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.RayTraceResult;
 
 public class ItemframeContainerPassthrough extends JavaPlugin implements Listener
 {
-    private int openCount = 0;
-    
     @Override
     public void onEnable()
     {
@@ -25,7 +21,7 @@ public class ItemframeContainerPassthrough extends JavaPlugin implements Listene
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void onPlayerInteractEntity(PlayerInteractEntityEvent event)
     {
-        if(event.getRightClicked().getType() != EntityType.ITEM_FRAME || event.getHand() == EquipmentSlot.OFF_HAND)
+        if(event.getRightClicked().getType() != EntityType.ITEM_FRAME)
         {
             return;
         }
@@ -37,7 +33,9 @@ public class ItemframeContainerPassthrough extends JavaPlugin implements Listene
         }
         Container container = (Container) result.getHitBlock().getState();
         event.setCancelled(true);
-        event.getPlayer().openInventory(container.getInventory());
-        Bukkit.broadcastMessage("Opening container! (" + (++openCount) + ")");
+        if(!event.getPlayer().getOpenInventory().getTopInventory().equals(container.getInventory()))
+        {
+            event.getPlayer().openInventory(container.getInventory());
+        }
     }
 }
