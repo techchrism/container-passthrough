@@ -21,7 +21,7 @@ public class ItemframeContainerPassthrough extends JavaPlugin implements Listene
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void onPlayerInteractEntity(PlayerInteractEntityEvent event)
     {
-        if(event.getRightClicked().getType() != EntityType.ITEM_FRAME)
+        if(event.getRightClicked().getType() != EntityType.ITEM_FRAME || event.getPlayer().isSneaking())
         {
             return;
         }
