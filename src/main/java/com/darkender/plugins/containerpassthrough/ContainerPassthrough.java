@@ -2,19 +2,21 @@ package com.darkender.plugins.containerpassthrough;
 
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.Container;
+import org.bukkit.block.*;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.RayTraceResult;
 
@@ -26,6 +28,7 @@ public class ContainerPassthrough extends JavaPlugin implements Listener
     private Set<EntityType> passthroughEntities;
     private Set<Material> passthroughBlocks;
     private boolean ignoreInteractEvents = false;
+    private ReflectionUtils reflectionUtils;
     
     @Override
     public void onEnable()
@@ -44,6 +47,7 @@ public class ContainerPassthrough extends JavaPlugin implements Listener
         }
         
         getServer().getPluginManager().registerEvents(this, this);
+        reflectionUtils = new ReflectionUtils();
     }
     
     private boolean canOpenContainer(Player player, Block block, BlockFace face)
@@ -57,7 +61,7 @@ public class ContainerPassthrough extends JavaPlugin implements Listener
         return !(interactEvent.useInteractedBlock() == Event.Result.DENY || interactEvent.isCancelled());
     }
     
-    private boolean tryOpeningContainer(Player player)
+    private boolean tryOpeningContainerRaytrace(Player player)
     {
         RayTraceResult result = player.rayTraceBlocks(5.0, FluidCollisionMode.NEVER);
         if(result == null || result.getHitBlock() == null || !(result.getHitBlock().getState() instanceof Container))
@@ -70,12 +74,33 @@ public class ContainerPassthrough extends JavaPlugin implements Listener
         {
             return false;
         }
-        
+        tryOpeningContainer(player, container);
+        return true;
+    }
+    
+    private void tryOpeningContainer(Player player, Container container)
+    {
         if(!player.getOpenInventory().getTopInventory().equals(container.getInventory()))
         {
             player.openInventory(container.getInventory());
+            if(container.getInventory() instanceof DoubleChestInventory)
+            {
+                player.setMetadata("doublechest-open", new FixedMetadataValue(this, true));
+            }
         }
-        return true;
+    }
+    
+    private void closeDoubleChest(DoubleChest doubleChest, HumanEntity entity)
+    {
+        Chest left = (Chest) doubleChest.getLeftSide();
+        Chest right = (Chest) doubleChest.getRightSide();
+    
+        // Fix spigot bugs...
+        if(reflectionUtils.getViewers(left) != left.getInventory().getViewers().size())
+        {
+            reflectionUtils.closeContainer(left, entity);
+            reflectionUtils.closeContainer(right, entity);
+        }
     }
     
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -86,7 +111,7 @@ public class ContainerPassthrough extends JavaPlugin implements Listener
             return;
         }
         
-        if(tryOpeningContainer(event.getPlayer()))
+        if(tryOpeningContainerRaytrace(event.getPlayer()))
         {
             event.setCancelled(true);
         }
@@ -102,17 +127,27 @@ public class ContainerPassthrough extends JavaPlugin implements Listener
         {
             return;
         }
-    
+        
         Block blockBehind = event.getClickedBlock().getRelative(event.getBlockFace().getOppositeFace());
         if(!(blockBehind.getState() instanceof Container) || !canOpenContainer(event.getPlayer(), blockBehind, event.getBlockFace()))
         {
             return;
         }
         Container container = (Container) blockBehind.getState();
-        if(!event.getPlayer().getOpenInventory().getTopInventory().equals(container.getInventory()))
-        {
-            event.getPlayer().openInventory(container.getInventory());
-        }
+        tryOpeningContainer(event.getPlayer(), container);
         event.setCancelled(true);
+    }
+    
+    @EventHandler(ignoreCancelled = true)
+    private void onInventoryClose(InventoryCloseEvent event)
+    {
+        HumanEntity p = event.getPlayer();
+        if(!p.hasMetadata("doublechest-open"))
+        {
+            return;
+        }
+        DoubleChest doubleChest = (DoubleChest) event.getInventory().getHolder();
+        closeDoubleChest(doubleChest, event.getPlayer());
+        p.removeMetadata("doublechest-open", this);
     }
 }
