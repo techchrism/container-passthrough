@@ -70,11 +70,10 @@ public class ContainerPassthrough extends JavaPlugin implements Listener
         }
         Container container = (Container) result.getHitBlock().getState();
         
-        if(!canOpenContainer(player, result.getHitBlock(), result.getHitBlockFace()))
+        if(canOpenContainer(player, result.getHitBlock(), result.getHitBlockFace()))
         {
-            return false;
+            tryOpeningContainer(player, container);
         }
-        tryOpeningContainer(player, container);
         return true;
     }
     
