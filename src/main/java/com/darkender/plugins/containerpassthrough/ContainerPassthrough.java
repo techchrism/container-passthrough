@@ -105,7 +105,9 @@ public class ContainerPassthrough extends JavaPlugin implements Listener
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void onPlayerInteractEntity(PlayerInteractEntityEvent event)
     {
-        if(event.getPlayer().isSneaking() || !passthroughEntities.contains(event.getRightClicked().getType()))
+        if(event.getPlayer().isSneaking() ||
+                !passthroughEntities.contains(event.getRightClicked().getType()) ||
+                event.getHand() == EquipmentSlot.OFF_HAND)
         {
             return;
         }
@@ -122,6 +124,7 @@ public class ContainerPassthrough extends JavaPlugin implements Listener
         if(ignoreInteractEvents || event.getPlayer().isSneaking() ||
                 event.getAction() != Action.RIGHT_CLICK_BLOCK ||
                 event.getClickedBlock() == null ||
+                event.getHand() == EquipmentSlot.OFF_HAND ||
                 !passthroughBlocks.contains(event.getClickedBlock().getType()))
         {
             return;
