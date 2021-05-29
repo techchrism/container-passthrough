@@ -45,10 +45,6 @@ public class ContainerPassthrough extends JavaPlugin implements Listener
         if (getConfig().getBoolean("through-itemframe")) {
             passthroughEntities.add(EntityType.ITEM_FRAME);
         }
-
-        if (getConfig().getBoolean("through-painting")) {
-            passthroughEntities.add(EntityType.PAINTING);
-        }
         
         passthroughBlocks = new HashSet<>();
         for(Material material : Material.values())
