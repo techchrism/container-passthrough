@@ -1,5 +1,6 @@
 package com.darkender.plugins.containerpassthrough;
 
+import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Material;
 import org.bukkit.block.*;
@@ -94,12 +95,16 @@ public class ContainerPassthrough extends JavaPlugin implements Listener
         Chest left = (Chest) doubleChest.getLeftSide();
         Chest right = (Chest) doubleChest.getRightSide();
     
-        // Fix spigot bugs...
-        if(reflectionUtils.getViewers(left) != left.getInventory().getViewers().size())
+        // Fix old spigot bugs...
+        Bukkit.getScheduler().runTaskLater(this, () ->
         {
-            reflectionUtils.closeContainer(left, entity);
-            reflectionUtils.closeContainer(right, entity);
-        }
+            if(reflectionUtils.isReflectionReady() && reflectionUtils.getViewers(left) != left.getInventory().getViewers().size())
+            {
+                reflectionUtils.closeContainer(left, entity);
+                reflectionUtils.closeContainer(right, entity);
+            }
+        }, 4L);
+        
     }
     
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

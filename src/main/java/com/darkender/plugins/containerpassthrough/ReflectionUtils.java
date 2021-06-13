@@ -15,6 +15,7 @@ public class ReflectionUtils
     private Method getTileEntityMethod;
     private Field viewCountField;
     private Method closeContainerMethod;
+    private boolean reflectionReady = false;
     
     public ReflectionUtils()
     {
@@ -34,11 +35,9 @@ public class ReflectionUtils
             viewCountField = tileEntityChest.getDeclaredField("viewingCount");
             viewCountField.setAccessible(true);
             
+            reflectionReady = true;
         }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
+        catch(Exception ignored) {}
     }
     
     private Object getTileEntity(Chest chest)
@@ -78,5 +77,10 @@ public class ReflectionUtils
     private Class<?> getNmsClass(String nmsClassName) throws ClassNotFoundException
     {
         return Class.forName("net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + "." + nmsClassName);
+    }
+    
+    public boolean isReflectionReady()
+    {
+        return reflectionReady;
     }
 }
