@@ -34,14 +34,23 @@ public class ContainerPassthrough extends JavaPlugin implements Listener
     @Override
     public void onEnable()
     {
+
+        saveDefaultConfig();
+
         passthroughEntities = new HashSet<>();
-        passthroughEntities.add(EntityType.PAINTING);
-        passthroughEntities.add(EntityType.ITEM_FRAME);
+
+        if (getConfig().getBoolean("through-painting")) {
+            passthroughEntities.add(EntityType.PAINTING);
+        }
+
+        if (getConfig().getBoolean("through-itemframe")) {
+            passthroughEntities.add(EntityType.ITEM_FRAME);
+        }
         
         passthroughBlocks = new HashSet<>();
         for(Material material : Material.values())
         {
-            if(material.name().contains("SIGN"))
+            if(material.name().contains("SIGN") && getConfig().getBoolean("through-sign"))
             {
                 passthroughBlocks.add(material);
             }
