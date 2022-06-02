@@ -11,3 +11,8 @@ jobs:
           java-version: 1.8
       - name: Build with Maven
         run: mvn -B package --file pom.xml
+      - name: upload-artifact
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: 112
+          path: /home/runner/work/container-passthrough/container-passthrough/target/*.jar
