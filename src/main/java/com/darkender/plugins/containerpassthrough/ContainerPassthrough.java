@@ -37,6 +37,7 @@ public class ContainerPassthrough extends JavaPlugin implements Listener
         passthroughEntities = new HashSet<>();
         passthroughEntities.add(EntityType.PAINTING);
         passthroughEntities.add(EntityType.ITEM_FRAME);
+        passthroughEntities.add(EntityType.GLOW_ITEM_FRAME);
         
         passthroughBlocks = new HashSet<>();
         for(Material material : Material.values())
