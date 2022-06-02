@@ -3,6 +3,7 @@
 A simple Spigot plugin to enable opening containers through certain blocks and entities.
 
 ## Passthrough Blocks / Entities
- - Signs
- - Paintings
- - Item Frames
+ - SIGN
+ - PAINTING
+ - ITEM_FRAME
+ - GLOW_ITEM_FRAME
