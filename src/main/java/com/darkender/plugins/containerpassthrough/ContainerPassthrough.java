@@ -58,6 +58,9 @@ public class ContainerPassthrough extends JavaPlugin implements Listener
             }
         }
         dyeItems.add(Material.INK_SAC);
+        dyeItems.add(Material.COCOA_BEANS);
+        dyeItems.add(Material.LAPIS_LAZULI);
+        dyeItems.add(Material.BONE_MEAL);
         dyeItems.add(Material.GLOW_INK_SAC);
 
         getServer().getPluginManager().registerEvents(this, this);
