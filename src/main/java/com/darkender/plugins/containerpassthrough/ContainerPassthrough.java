@@ -3,7 +3,11 @@ package com.darkender.plugins.containerpassthrough;
 import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Material;
-import org.bukkit.block.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Chest;
+import org.bukkit.block.Container;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -126,12 +130,16 @@ public class ContainerPassthrough extends JavaPlugin implements Listener
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void onPlayerInteract(PlayerInteractEvent event)
     {
-        if(ignoreInteractEvents || event.getPlayer().isSneaking() ||
+        if(
+                ignoreInteractEvents ||
+                event.getPlayer().isSneaking() ||
                 event.getAction() != Action.RIGHT_CLICK_BLOCK ||
                 event.getClickedBlock() == null ||
                 event.getHand() == EquipmentSlot.OFF_HAND ||
-                !passthroughBlocks.contains(event.getClickedBlock().getType()))
-        {
+                !passthroughBlocks.contains(event.getClickedBlock().getType()) ||
+                (event.getItem() != null && event.getItem().getType().name().contains("INK_SAC")) ||
+                (event.getItem() != null && event.getItem().getType().name().contains("_DYE"))
+        ) {
             return;
         }
         
